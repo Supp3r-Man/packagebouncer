@@ -1,0 +1,3 @@
+// FIXTURE ONLY. Inert text standing in for bundled source. Never executed or imported.
+const cfg = "q9Zr7Lw0xT3mVb8KfYp2NdHs6UcJe1GaXoRi4WtB5nMvEz7QyLk9PdSgFh3CuAj2";
+module.exports = function lodahs() { return cfg.length; };

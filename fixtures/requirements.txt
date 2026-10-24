@@ -1,0 +1,7 @@
+# FIXTURE ONLY. Sample requirements for PackageBouncer. Never install it.
+requests==2.31.0
+reqeusts>=1.0
+c0lorama
+nurnpy==1.0.0
+flask>=2.0
+numpy~=1.26

@@ -1,0 +1,28 @@
+{
+  "_inert": "FIXTURE ONLY. Invented registry facts standing in for a registry lookup. Nothing here is real data.",
+  "as_of": "2026-10-24",
+  "packages": {
+    "npm:express": {"first_published": "2010-12-29", "weekly_downloads": 30000000, "maintainers": ["maint-a", "maint-b"], "requires": ["body-parser", "cookie"]},
+    "npm:body-parser": {"first_published": "2013-01-10", "weekly_downloads": 28000000, "maintainers": ["maint-a"], "requires": ["bytes"]},
+    "npm:cookie": {"first_published": "2012-05-01", "weekly_downloads": 40000000, "maintainers": ["maint-a"], "requires": []},
+    "npm:bytes": {"first_published": "2012-03-01", "weekly_downloads": 45000000, "maintainers": ["maint-a"], "requires": []},
+    "npm:lodash": {"first_published": "2012-04-23", "weekly_downloads": 45000000, "maintainers": ["maint-c"], "requires": []},
+    "npm:chalk": {"first_published": "2013-08-03", "weekly_downloads": 280000000, "maintainers": ["maint-d"], "requires": []},
+    "npm:jest": {"first_published": "2014-05-04", "weekly_downloads": 20000000, "maintainers": ["maint-e"], "requires": []},
+    "npm:lodahs": {"first_published": "2026-10-12", "weekly_downloads": 87, "maintainers": ["anon-7f3"], "requires": ["fast-cfg-loader", "lodash"]},
+    "npm:m0ment": {"first_published": "2026-10-20", "weekly_downloads": 41, "maintainers": ["anon-2b8"], "requires": []},
+    "npm:expresss": {"first_published": "2026-09-01", "weekly_downloads": 340, "maintainers": ["anon-9c1"], "requires": ["express"]},
+    "npm:fast-cfg-loader": {"first_published": "2026-10-15", "weekly_downloads": 212, "maintainers": ["anon-q1"], "previous_maintainers": ["maint-orig"], "requires": []},
+    "pypi:requests": {"first_published": "2011-02-14", "weekly_downloads": 90000000, "maintainers": ["maint-f"], "requires": ["urllib3", "certifi"]},
+    "pypi:urllib3": {"first_published": "2012-01-01", "weekly_downloads": 95000000, "maintainers": ["maint-g"], "requires": []},
+    "pypi:certifi": {"first_published": "2012-02-01", "weekly_downloads": 85000000, "maintainers": ["maint-h"], "requires": []},
+    "pypi:flask": {"first_published": "2010-04-06", "weekly_downloads": 15000000, "maintainers": ["maint-i"], "requires": ["werkzeug", "jinja2"]},
+    "pypi:werkzeug": {"first_published": "2007-04-24", "weekly_downloads": 30000000, "maintainers": ["maint-i"], "requires": []},
+    "pypi:jinja2": {"first_published": "2008-07-17", "weekly_downloads": 40000000, "maintainers": ["maint-i"], "requires": []},
+    "pypi:numpy": {"first_published": "2006-09-16", "weekly_downloads": 60000000, "maintainers": ["maint-j"], "requires": []},
+    "pypi:colorama": {"first_published": "2010-04-08", "weekly_downloads": 70000000, "maintainers": ["maint-k"], "requires": []},
+    "pypi:reqeusts": {"first_published": "2026-10-18", "weekly_downloads": 63, "maintainers": ["anon-z9"], "requires": ["requests"]},
+    "pypi:c0lorama": {"first_published": "2026-10-21", "weekly_downloads": 29, "maintainers": ["anon-z9"], "requires": []},
+    "pypi:nurnpy": {"first_published": "2026-10-10", "weekly_downloads": 118, "maintainers": ["anon-4d4"], "requires": ["numpy"]}
+  }
+}

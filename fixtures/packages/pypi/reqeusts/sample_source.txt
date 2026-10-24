@@ -1,0 +1,4 @@
+# FIXTURE ONLY. Inert text standing in for bundled source. Never executed or imported.
+BLOB = "kT8vQ2xLm0Zp4RbN7wYd1HsJ6cUe3GfAoXi9WtB5nMvEz2QyLk8PdSgFh7CuAj4qr"
+def get(url):
+    return BLOB

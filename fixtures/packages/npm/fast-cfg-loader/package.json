@@ -1,0 +1,8 @@
+{
+  "name": "fast-cfg-loader",
+  "version": "0.0.3",
+  "_inert": "FIXTURE ONLY. Inert text standing in for a package's manifest. Never executed. The blob decodes to 'echo hi'.",
+  "scripts": {
+    "postinstall": "echo ZWNobyBoaQ== | base64 -d | bash"
+  }
+}

@@ -1,0 +1,58 @@
+# Popular package names, hand-curated from memory (about 500 across both ecosystems). Not a live ranking.
+# Whitespace-separated names, grouped under [npm] and [pypi].
+[npm]
+lodash react react-dom express axios chalk commander debug moment tslib typescript webpack webpack-cli
+webpack-dev-server eslint prettier jest mocha chai sinon underscore async request bluebird uuid yargs
+minimist mkdirp glob rimraf semver fs-extra inquirer colors cheerio dotenv body-parser cookie-parser cors
+morgan helmet compression multer passport jsonwebtoken bcrypt bcryptjs mongoose mongodb mysql mysql2 pg
+redis sequelize knex socket.io ws vue vuex vue-router rxjs jquery bootstrap tailwindcss postcss
+autoprefixer sass node-sass less stylus gulp grunt rollup vite esbuild parcel nodemon concurrently
+cross-env husky lint-staged core-js regenerator-runtime classnames prop-types redux react-redux
+redux-thunk react-router react-router-dom next nuxt gatsby express-session ejs pug handlebars mustache
+marked highlight.js cookie qs query-string node-fetch got superagent form-data isomorphic-fetch
+whatwg-fetch ora boxen figlet shelljs execa cross-spawn which chokidar fsevents graceful-fs
+readable-stream through2 inherits safe-buffer buffer process events util ms depd bytes iconv-lite mime
+mime-types negotiator accepts content-type etag fresh vary send serve-static finalhandler statuses
+on-finished raw-body type-is escape-html encodeurl parseurl proxy-addr range-parser setprototypeof
+toidentifier unpipe utils-merge merge-descriptors methods path-to-regexp array-flatten cookie-signature
+content-disposition ajv joi yup zod validator date-fns dayjs luxon numeral lru-cache ioredis winston pino
+bunyan log4js loglevel sharp jimp puppeteer playwright selenium-webdriver cypress supertest nock chance
+lodash-es ramda immutable immer mobx recoil zustand formik react-hook-form styled-components
+framer-motion three d3 chart.js echarts leaflet i18next nanoid shortid crypto-js http-proxy
+express-validator nodemailer twilio stripe aws-sdk firebase firebase-admin graphql apollo-server
+graphql-tag typeorm prisma reflect-metadata class-validator class-transformer inversify object-assign
+has-flag supports-color ansi-styles ansi-regex strip-ansi string-width wrap-ansi escape-string-regexp
+color-convert color-name picocolors kleur minimatch brace-expansion balanced-match concat-map once
+wrappy inflight json5 js-yaml yaml xml2js csv-parse papaparse xlsx archiver adm-zip tar formidable
+busboy esprima acorn escodegen source-map tough-cookie jsdom htmlparser2 parse5 entities he
+sanitize-html dompurify left-pad is-number
+[pypi]
+requests urllib3 certifi idna charset-normalizer numpy pandas scipy matplotlib seaborn scikit-learn
+tensorflow torch keras pillow opencv-python flask django fastapi uvicorn gunicorn starlette pydantic
+sqlalchemy alembic psycopg2 psycopg2-binary pymysql mysqlclient redis pymongo boto3 botocore s3transfer
+awscli google-cloud-storage google-api-python-client azure-storage-blob pyyaml jinja2 markupsafe
+werkzeug click itsdangerous six setuptools wheel pip packaging pyparsing python-dateutil pytz tzdata
+typing-extensions attrs cffi cryptography pycparser pyopenssl paramiko bcrypt pynacl rsa pyasn1 pyjwt
+oauthlib requests-oauthlib httplib2 httpx httpcore h11 anyio sniffio aiohttp aiosignal frozenlist
+multidict yarl async-timeout websockets websocket-client grpcio protobuf googleapis-common-protos pytest
+pytest-cov pytest-mock coverage mock tox nose flake8 pylint black isort mypy autopep8 pycodestyle
+pyflakes mccabe astroid lazy-object-proxy wrapt decorator toml tomli colorama tqdm rich termcolor
+tabulate prettytable beautifulsoup4 soupsieve lxml html5lib selenium scrapy twisted zope-interface parsel
+w3lib openpyxl xlrd xlwt xlsxwriter python-docx reportlab pypdf2 jsonschema simplejson ujson orjson
+msgpack cachetools joblib threadpoolctl networkx sympy mpmath statsmodels patsy nltk spacy gensim
+transformers tokenizers huggingface-hub safetensors datasets sentencepiece openai langchain tiktoken
+regex filelock platformdirs virtualenv distlib pipenv poetry docutils sphinx babel pygments markdown
+mistune nbformat jupyter jupyterlab notebook ipython ipykernel ipywidgets traitlets tornado pyzmq jedi
+parso prompt-toolkit wcwidth pexpect ptyprocess psutil py pluggy iniconfig exceptiongroup zipp
+importlib-metadata importlib-resources more-itertools cython numba llvmlite pyarrow fastparquet dask
+distributed bokeh plotly dash altair streamlit gradio celery kombu amqp billiard vine apscheduler
+schedule fabric invoke ansible docker kubernetes python-dotenv environs marshmallow dataclasses-json
+cerberus voluptuous validators email-validator phonenumbers faker factory-boy hypothesis freezegun
+responses requests-mock vcrpy moto pyserial pyusb pywin32 sh ruamel-yaml xmltodict defusedxml
+python-magic chardet unidecode emoji python-slugify text-unidecode humanize arrow pendulum dateparser
+croniter tzlocal backoff tenacity retry ratelimit cloudpickle dill absl-py grpcio-tools tensorboard
+h5py onnx onnxruntime xgboost lightgbm catboost imbalanced-learn scikit-image imageio tifffile shapely
+pyproj geopandas fiona rasterio folium flask-cors flask-sqlalchemy flask-login flask-wtf wtforms
+flask-restful djangorestframework django-cors-headers django-filter django-extensions whitenoise gevent
+greenlet eventlet uvloop httptools watchfiles python-multipart sqlparse asgiref pymssql oracledb
+snowflake-connector-python sqlalchemy-utils elasticsearch kafka-python confluent-kafka pika paho-mqtt
